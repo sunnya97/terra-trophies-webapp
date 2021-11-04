@@ -208,7 +208,7 @@ gallerySelector.addEventListener("click", () => {
       }
 
       // query trophy info
-      console.log("querying trophy info");
+      console.log("querying trophy info...");
       const terra = new LCDClient({
         chainID,
         URL: lcd,
@@ -219,33 +219,39 @@ gallerySelector.addEventListener("click", () => {
           trophy_id: trophyId,
         },
       });
+      console.log("done! response:", response);
+
       const { name, description, image } = response.metadata;
-      trophyNameSpan.innerHTML = "🏆 " + (name ? name : "Unknown Trophy Name") + " 🏆";
-      trophyDescriptionSpan.innerHTML = description ? description : "Unknown trophy description";
+      trophyNameSpan.innerHTML = "🏆 " + (name ? name : "undefined") + " 🏆";
+      trophyDescriptionSpan.innerHTML = description ? description : "undefined";
       trophyImage.src = ipfsToPinataGateway(image);
 
       // sign message
       // message content is simply user's address
-      console.log("signing message");
+      console.log("signing message...");
       const hash = Buffer.from(SHA256.hash(wallet.terraAddress).toString(), "hex");
       const privKey = base64ToBytes(secretKey);
       const { signature } = secp256k1.ecdsaSign(hash, privKey);
+      console.log("done! signature:", bytesToBase64(signature));
 
       // submit tx
       submitTxButton.addEventListener("click", () => {
-        console.log("sending tx");
+        const tx = {
+          msgs: [
+            new MsgExecuteContract(wallet.terraAddress, hub, {
+              mint_by_signature: {
+                trophy_id: trophyId,
+                signature: bytesToBase64(signature),
+              },
+            }),
+          ],
+          feeDenoms: ["uusd"],
+          gasPrices: "0.15uusd",
+          gasAdjustment: 1.2,
+        };
+        console.log("sending tx:", tx);
         controller
-          .post({
-            msgs: [
-              new MsgExecuteContract(wallet.terraAddress, hub, {
-                mint_by_signature: {
-                  trophy_id: trophyId,
-                  signature: bytesToBase64(signature),
-                },
-              }),
-            ],
-            feeDenoms: ["uusd"],
-          })
+          .post(tx)
           .then((result: TxResult) => {
             console.log("tx successful!");
             const { txhash } = result.result;
