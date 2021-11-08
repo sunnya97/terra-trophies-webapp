@@ -61,7 +61,8 @@
       #trophyName {
         font-family: "Raleway", cursive;
       }
-      #trophyImage {
+      #trophyImage,
+      #trophyVideo {
         max-width: min(500px, 100%);
         max-height: min(500px, 100%);
       }
@@ -121,18 +122,21 @@
     </div>
 
     <div id="claimContainer" class="container-fluid">
-      <div id="trophyMetadataContainer" class="text-center">
+      <div id="trophyHeaderContainer" class="text-center">
         <div class="fs-2 mb-2">
           <span id="trophyName">Please connect wallet</span>
         </div>
         <div id="trophyDescription" class="fs-5 mb-4">
           <i></i>
         </div>
-        <img
-          id="trophyImage"
-          class="mb-4"
-          src="https://via.placeholder.com/500?text=image+unavailable"
-        />
+      </div>
+
+      <div id="trophyImageContainer" class="container-fluid text-center mb-4">
+        <img id="trophyImage" src="https://via.placeholder.com/500?text=image+unavailable" />
+      </div>
+
+      <div id="trophyVideoContainer" class="container-fluid d-flex justify-content-center mb-4">
+        <video id="trophyVideo" style="display: none"></video>
       </div>
 
       <div id="formContainer" class="ms-auto me-auto">

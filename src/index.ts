@@ -63,6 +63,7 @@ const galleryContainer = document.getElementById("galleryContainer") as HTMLElem
 const trophyNameSpan = document.getElementById("trophyName") as HTMLElement;
 const trophyDescriptionSpan = document.getElementById("trophyDescription") as HTMLElement;
 const trophyImage = document.getElementById("trophyImage") as HTMLImageElement;
+const trophyVideo = document.getElementById("trophyVideo") as HTMLVideoElement;
 
 const submitTxButton = document.getElementById("submitTxButton") as HTMLElement;
 const txResult = document.getElementById("txResult") as HTMLElement;
@@ -221,10 +222,24 @@ gallerySelector.addEventListener("click", () => {
       });
       console.log("done! response:", response);
 
-      const { name, description, image } = response.metadata;
+      const { name, description, image, animation_url } = response.metadata;
       trophyNameSpan.innerHTML = "🏆 " + (name ? name : "undefined") + " 🏆";
       trophyDescriptionSpan.innerHTML = description ? description : "undefined";
       trophyImage.src = ipfsToPinataGateway(image);
+
+      // if the trophy has video, then show video, hide image
+      if (animation_url) {
+        console.log("adding source to video");
+        const source = document.createElement("source");
+        source.src = ipfsToPinataGateway(animation_url);
+        source.type = "video/mp4";
+        trophyVideo.appendChild(source);
+        trophyVideo.play();
+
+        console.log("hide image, show video");
+        trophyImage.style.display = "none";
+        trophyVideo.style.display = "block";
+      }
 
       // sign message
       // message content is simply user's address
