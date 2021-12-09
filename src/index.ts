@@ -14,6 +14,7 @@ import {
 
 import * as secp256k1 from "secp256k1";
 import { SHA256 } from "jscrypto/SHA256";
+import hkdf from 'js-crypto-hkdf'; 
 
 import "bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
